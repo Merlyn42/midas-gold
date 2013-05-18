@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251574</millis>
+  <sequence>0</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loading plugin: ConvertBlocksPlugin.jar</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251587</millis>
+  <sequence>1</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loading plugin: ConvertBuildCraftPipesPlugin.jar</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251588</millis>
+  <sequence>2</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loading plugin: ConvertItemsPlugin.jar</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251589</millis>
+  <sequence>3</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loading plugin: ConvertPlayerInventoriesPlugin.jar</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251591</millis>
+  <sequence>4</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>loading class: plugins.convertblocksplugin.ConvertBlocks</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251595</millis>
+  <sequence>5</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loaded Plugin: Convert Blocks</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251596</millis>
+  <sequence>6</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>loading class: havocx42.buildcraftpipesplugin.BuildCraftPipesPlugin</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251597</millis>
+  <sequence>7</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loaded Plugin: Build Craft Pipes Plugin</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251598</millis>
+  <sequence>8</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>loading class: plugins.convertitemsplugin.ConvertItems</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251600</millis>
+  <sequence>9</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loaded Plugin: Convert Items</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251601</millis>
+  <sequence>10</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>loading class: plugins.convertplayerinventoriesplugin.ConvertPlayerInventories</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251602</millis>
+  <sequence>11</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loaded Plugin: Convert Player Inventories</message>
+</record>
+<record>
+  <date>2013-05-12T11:40:51</date>
+  <millis>1368355251762</millis>
+  <sequence>12</sequence>
+  <logger>pfaeff.IDChanger</logger>
+  <level>CONFIG</level>
+  <class>pfaeff.IDChanger</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>System Look and Feel:com.sun.java.swing.plaf.windows.WindowsLookAndFeel</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510052</millis>
+  <sequence>0</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loading plugin: ConvertBlocksPlugin.jar</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510065</millis>
+  <sequence>1</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loading plugin: ConvertBuildCraftPipesPlugin.jar</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510066</millis>
+  <sequence>2</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loading plugin: ConvertItemsPlugin.jar</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510067</millis>
+  <sequence>3</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loading plugin: ConvertPlayerInventoriesPlugin.jar</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510069</millis>
+  <sequence>4</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>loading class: plugins.convertblocksplugin.ConvertBlocks</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510072</millis>
+  <sequence>5</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loaded Plugin: Convert Blocks</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510073</millis>
+  <sequence>6</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>loading class: havocx42.buildcraftpipesplugin.BuildCraftPipesPlugin</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510075</millis>
+  <sequence>7</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loaded Plugin: Build Craft Pipes Plugin</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510076</millis>
+  <sequence>8</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>loading class: plugins.convertitemsplugin.ConvertItems</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510077</millis>
+  <sequence>9</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loaded Plugin: Convert Items</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510079</millis>
+  <sequence>10</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>loading class: plugins.convertplayerinventoriesplugin.ConvertPlayerInventories</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510080</millis>
+  <sequence>11</sequence>
+  <logger>havocx42.PluginLoader</logger>
+  <level>INFO</level>
+  <class>havocx42.PluginLoader</class>
+  <method>loadPlugins</method>
+  <thread>1</thread>
+  <message>Loaded Plugin: Convert Player Inventories</message>
+</record>
+<record>
+  <date>2013-05-18T17:45:10</date>
+  <millis>1368895510242</millis>
+  <sequence>12</sequence>
+  <logger>pfaeff.IDChanger</logger>
+  <level>CONFIG</level>
+  <class>pfaeff.IDChanger</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>System Look and Feel:com.sun.java.swing.plaf.windows.WindowsLookAndFeel</message>
+</record>
+</log>
