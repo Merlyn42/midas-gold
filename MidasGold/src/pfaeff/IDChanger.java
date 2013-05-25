@@ -139,7 +139,7 @@ public class IDChanger extends JFrame implements ActionListener {
 	private static void initRootLogger() throws SecurityException, IOException {
 
 		FileHandler fileHandler;
-		fileHandler = new FileHandler("midasLog.%u.%g.txt", 1024 * 1024, 3, true);
+		fileHandler = new FileHandler("midasLog.%u.%g.log", 1024 * 1024, 3, true);
 		fileHandler.setLevel(Level.CONFIG);
 		Logger rootLogger = Logger.getLogger("");
 		Handler[] handlers = rootLogger.getHandlers();
