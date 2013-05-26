@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Kai Röhr 
+ * Copyright 2011 Kai Rohr 
  *    
  *
  *    This file is part of mIDas.
