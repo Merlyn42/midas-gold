@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,11 +12,37 @@ import java.util.logging.Level;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+
+import pfaeff.IDChanger;
 
 public class RunConfiguration {
 	public PluginLoader pluginLoader;
-	public ArrayList<File> worlds = new ArrayList<File>();
+	public File world;
 	private DefaultListModel<TranslationRecord> translations = new DefaultListModel<TranslationRecord>();
+	IDChanger ui;
+	
+	public void startConversion(){
+
+		final HashMap<BlockUID, BlockUID> translations = getTranslations();
+
+		final World conversionWorld;
+		try {
+			conversionWorld = new World(this.world);
+
+			SwingWorker<> worker = new SwingWorker() {
+				
+				@Override
+				protected Object doInBackground() throws Exception {
+					conversionWorld.convert(ui, translations, pluginLoader);
+					return null;
+				}
+			};
+			worker.execute();
+		} catch (IOException e1) {
+			logger.log(Level.WARNING, "Unable to open world, are you sure you have selected a save?");
+		}
+	}
 
 	public void addTranslation(TranslationRecord tr)
 			throws TranslationExistsException {

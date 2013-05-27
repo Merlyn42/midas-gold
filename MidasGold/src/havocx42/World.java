@@ -37,7 +37,8 @@ public class World {
 		playerFiles = getPlayerFiles();
 	}
 
-	public void convert(Status status, HashMap<BlockUID, BlockUID> translations,PluginLoader pluginLoader) {
+	public void convert(IDChanger UI, HashMap<BlockUID, BlockUID> translations,PluginLoader pluginLoader) {
+		Status status = UI.status;
 		status.changedChest = 0;
 		status.changedPlaced = 0;
 		status.changedPlayer = 0;
@@ -115,8 +116,12 @@ public class World {
 				}
 			}
 		}
-		
-
+		long duration = System.currentTimeMillis() - beginTime;
+		JOptionPane.showMessageDialog(UI, "Done in " + duration + "ms" + System.getProperty("line.separator") + status.changedPlaced
+				+ " placed blocks changed." + System.getProperty("line.separator") + status.changedPlayer
+				+ " blocks in player inventories changed." + System.getProperty("line.separator") + status.changedChest
+				+ " blocks in entity inventories changed.", "Information", JOptionPane.INFORMATION_MESSAGE);
+	}
 
 	private ArrayList<RegionFileExtended> getRegionFiles() throws IOException {
 		// Switch to the "region" folder

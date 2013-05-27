@@ -84,6 +84,7 @@ public class IDChanger extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 9149749206914440913L;
 	private ArrayList<String> idNames = new ArrayList<String>();
 	public Status status = new Status();
+	public ArrayList<File> worlds = new ArrayList<File>();
 
 	// Gui Elements
 	private JComboBox cb_selectSaveGame;

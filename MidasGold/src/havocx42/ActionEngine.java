@@ -23,6 +23,8 @@ public class ActionEngine implements ActionListener {
 	RunConfiguration config;
 	IDChanger ui;
 	private static Logger logger = Logger.getLogger(ActionEngine.class.getName());
+	
+		
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -78,44 +80,11 @@ public class ActionEngine implements ActionListener {
 		
 		// Start
 		if ("start".equals(e.getActionCommand())) {
-			// World
-			int worldIndex = ui.getWorldIndex();
-
-
-			if (worldIndex < 0) {
-				return;
-			}
-			
 			String message = config.verify();
 			if(message!=null){
 				ui.showMessage(message, "Warning", JOptionPane.WARNING_MESSAGE);
 			}
 
-			final HashMap<BlockUID, BlockUID> translations = config.getTranslations();
-
-			final World world;
-			try {
-				world = new World(config.worlds.get(worldIndex));
-
-				SwingWorker worker = new SwingWorker() {
-					
-					@Override
-					protected Object doInBackground() throws Exception {
-						world.convert(ui.status, translations, config.pluginLoader);
-						return null;
-					}
-				};
-				ui.showMessage("Done in " + duration + "ms" + System.getProperty("line.separator") + ui.status.changedPlaced
-						+ " placed blocks changed." + System.getProperty("line.separator") + ui.status.changedPlayer
-						+ " blocks in player inventories changed." + System.getProperty("line.separator") + ui.status.changedChest
-						+ " blocks in entity inventories changed.", "Information", JOptionPane.INFORMATION_MESSAGE);
-			}
-
-				// worker.addPropertyChangeListener(this);
-				worker.execute();
-			} catch (IOException e1) {
-				logger.log(Level.WARNING, "Unable to open world, are you sure you have selected a save?");
-			}
 		}
 		return;
 	}
