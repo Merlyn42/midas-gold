@@ -1,5 +1,7 @@
 package havocx42;
 
+import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -10,21 +12,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.swing.UIManager;
 
 import pfaeff.IDChanger;
 
 public class ActionEngine implements ActionListener {
 	RunConfiguration config;
-	IDChanger ui;
+	public IDChanger ui;
 	private static Logger logger = Logger.getLogger(ActionEngine.class.getName());
 	
-		
+	public ActionEngine(RunConfiguration config) {
+		super();
+		this.config = config;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -45,7 +53,7 @@ public class ActionEngine implements ActionListener {
 		// new version open a patch file
 		if ("openPatch".equals(e.getActionCommand())) {
 			File patch = ui.loadPatch();
-			config.loadTranslationsFromFile(patch);
+			ui.loadTranslationsFromFile(patch);
 		}
 
 		// Add ID
@@ -57,7 +65,7 @@ public class ActionEngine implements ActionListener {
 
 				TranslationRecord tr = TranslationRecordFactory.createTranslationRecord(currentSource, currentTarget);
 				if (tr != null) {
-					config.addTranslation(tr);
+					ui.addTranslation(tr);
 				} else {
 					ui.showMessage("That's not how you format translations" + System.getProperty("line.separator")
 							+ "example:" + System.getProperty("line.separator") + "1 stone" + System.getProperty("line.separator")
@@ -74,7 +82,7 @@ public class ActionEngine implements ActionListener {
 		// Remove ID
 		if ("removeID".equals(e.getActionCommand())) {
 			for (int i = ui.li_ID.getSelectedIndices().length - 1; i >= 0; i--) {
-				config.removeTranslation(ui.li_ID.getSelectedIndices()[i]);
+				ui.removeTranslation(ui.li_ID.getSelectedIndices()[i]);
 			}
 		}
 		
@@ -88,5 +96,53 @@ public class ActionEngine implements ActionListener {
 		}
 		return;
 	}
+	
+	private static void initRootLogger() throws SecurityException, IOException {
+
+		FileHandler fileHandler;
+		fileHandler = new FileHandler("midasLog.%u.%g.log", 1024 * 1024, 3, true);
+		fileHandler.setLevel(Level.CONFIG);
+		Logger rootLogger = Logger.getLogger("");
+		Handler[] handlers = rootLogger.getHandlers();
+		for (Handler handler : handlers) {
+			handler.setLevel(Level.INFO);
+		}
+		rootLogger.setLevel(Level.CONFIG);
+		rootLogger.addHandler(fileHandler);
+	}
+	
+	public static void main(String[] args) {
+		try {
+			initRootLogger();
+		} catch (SecurityException | IOException e) {
+			logger.log(Level.WARNING, "Unable to create log File", e);
+			return;
+		}
+		EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
+		queue.push(new EventQueueProxy());
+
+		try {
+			// Use system specific look and feel
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Unable to set look and feel", e);
+		}
+		try {
+			RunConfiguration config = new RunConfiguration();
+			ActionEngine engine = new ActionEngine(config);
+			IDChanger frame = new IDChanger("mIDas *GOLD* V0.2.5",engine);
+			
+			
+
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Runtime Exception", e);
+		}
+
+		logger.config("System Look and Feel:"
+				+ UIManager.getSystemLookAndFeelClassName().toString());
+
+	}
+
+
 
 }

@@ -20,12 +20,15 @@
 
 package pfaeff;
 
+import havocx42.ActionEngine;
 import havocx42.BlockUID;
 import havocx42.ConfigurePluginsUI;
 import havocx42.EventQueueProxy;
 import havocx42.FileListCellRenderer;
 import havocx42.PluginLoader;
+import havocx42.RunConfiguration;
 import havocx42.Status;
+import havocx42.TranslationExistsException;
 import havocx42.TranslationRecord;
 import havocx42.TranslationRecordFactory;
 import havocx42.World;
@@ -37,6 +40,8 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -77,26 +82,29 @@ import javax.swing.border.EtchedBorder;
 /*
  * TODO: Clean up, isolate visualization from logic and data
  */
-public class IDChanger extends JFrame implements ActionListener {
+public class IDChanger extends JFrame {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9149749206914440913L;
-	private ArrayList<String> idNames = new ArrayList<String>();
-	public Status status = new Status();
-	public ArrayList<File> worlds = new ArrayList<File>();
+	private static final long	serialVersionUID	= 9149749206914440913L;
+	private ArrayList<String>	idNames				= new ArrayList<String>();
+	private ArrayList<File>		saveGames			= new ArrayList<File>();
+	public Status				status				= new Status();
+	public ArrayList<File>		worlds				= new ArrayList<File>();
+	private ActionEngine		engine;
+	public DefaultListModel<TranslationRecord> model = new DefaultListModel<TranslationRecord>();
 
 	// Gui Elements
-	private JComboBox cb_selectSaveGame;
-	private JComboBox cb_selectSourceID;
-	private JComboBox cb_selectTargetID;
+	private JComboBox			cb_selectSaveGame;
+	private JComboBox			cb_selectSourceID;
+	private JComboBox			cb_selectTargetID;
 
-	public JList li_ID;
-	public PluginLoader pluginLoader;
+	public JList				li_ID;
+	public PluginLoader			pluginLoader;
 
-	private static Logger logger = Logger.getLogger(IDChanger.class.getName());
+	private static Logger		logger				= Logger.getLogger(IDChanger.class.getName());
 
-	public IDChanger(String title) throws SecurityException, IOException {
+	public IDChanger(String title, ActionEngine	engine_in) throws SecurityException, IOException {
 		super(title);
 
 		// Init Data
@@ -104,9 +112,9 @@ public class IDChanger extends JFrame implements ActionListener {
 		initSaveGames();
 		initIDNames();
 		initPlugins();
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		engine = engine_in;
+				
 		// Add GUI elements
 		getContentPane().add(createOpenFilesPanel(), BorderLayout.PAGE_START);
 		getContentPane().add(createChooseIDsPanel(), BorderLayout.LINE_START);
@@ -128,26 +136,11 @@ public class IDChanger extends JFrame implements ActionListener {
 		try {
 			pluginLoader = new PluginLoader();
 		} catch (FileNotFoundException e) {
-			logger.log(Level.SEVERE,
-					"Unable to load plugins: " + e.getMessage(), e);
+			logger.log(Level.SEVERE, "Unable to load plugins: " + e.getMessage(), e);
 			e.printStackTrace();
 		}
 		pluginLoader.loadPlugins();
 
-	}
-
-	private static void initRootLogger() throws SecurityException, IOException {
-
-		FileHandler fileHandler;
-		fileHandler = new FileHandler("midasLog.%u.%g.log", 1024 * 1024, 3, true);
-		fileHandler.setLevel(Level.CONFIG);
-		Logger rootLogger = Logger.getLogger("");
-		Handler[] handlers = rootLogger.getHandlers();
-		for (Handler handler : handlers) {
-			handler.setLevel(Level.INFO);
-		}
-		rootLogger.setLevel(Level.CONFIG);
-		rootLogger.addHandler(fileHandler);
 	}
 
 	private void initSaveGames() {
@@ -159,8 +152,7 @@ public class IDChanger extends JFrame implements ActionListener {
 
 	private void initIDNames() {
 		try {
-			String path = IDChanger.class.getProtectionDomain().getCodeSource()
-					.getLocation().toURI().getPath();
+			String path = IDChanger.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 			File f = new File((new File(path)).getParent(), "IDNames.txt");
 			if (f.exists()) {
 				idNames = readFile(f);
@@ -184,8 +176,7 @@ public class IDChanger extends JFrame implements ActionListener {
 					saveGames.add(f);
 
 					cb_selectSaveGame.addItem(f);
-					cb_selectSaveGame.setSelectedIndex(cb_selectSaveGame
-							.getItemCount() - 1);
+					cb_selectSaveGame.setSelectedIndex(cb_selectSaveGame.getItemCount() - 1);
 
 					// workaround for a bug that occurs when there was no
 					// item in the beginning
@@ -198,13 +189,11 @@ public class IDChanger extends JFrame implements ActionListener {
 
 				} else {
 					cb_selectSaveGame.setSelectedIndex(saveGames.indexOf(f));
-					JOptionPane.showMessageDialog(this,
-							"The selected savegame is already in the list!",
-							"Information", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(this, "The selected savegame is already in the list!", "Information",
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 			} else {
-				JOptionPane.showMessageDialog(this, "Invalid savegame!",
-						"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Invalid savegame!", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -214,10 +203,8 @@ public class IDChanger extends JFrame implements ActionListener {
 		final JFileChooser fileChooser = new JFileChooser();
 		String path;
 		try {
-			path = IDChanger.class.getProtectionDomain().getCodeSource()
-					.getLocation().toURI().getPath();
-			fileChooser.setSelectedFile(new File((new File(path)).getParent(),
-					"Patch.txt"));
+			path = IDChanger.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			fileChooser.setSelectedFile(new File((new File(path)).getParent(), "Patch.txt"));
 		} catch (URISyntaxException e1) {
 			logger.log(Level.WARNING, "Unable to load Patch file", e1);
 		}
@@ -231,10 +218,9 @@ public class IDChanger extends JFrame implements ActionListener {
 		}
 		return result;
 	}
-	
-	public void showMessage(String message, String title, int messageType){
-		JOptionPane.showMessageDialog(this, message, title,
-				messageType);
+
+	public void showMessage(String message, String title, int messageType) {
+		JOptionPane.showMessageDialog(this, message, title, messageType);
 	}
 
 	public String getNewSourceID() {
@@ -244,15 +230,14 @@ public class IDChanger extends JFrame implements ActionListener {
 	public String getNewTargetID() {
 		return (String) cb_selectTargetID.getSelectedItem();
 	}
-	
-	public int getWorldIndex(){
-		 return cb_selectSaveGame.getSelectedIndex();
+
+	public int getWorldIndex() {
+		return cb_selectSaveGame.getSelectedIndex();
 	}
 
 	private JPanel createProgressPanel() {
 		JPanel pnl_progress = new JPanel();
-		pnl_progress
-				.setLayout(new BoxLayout(pnl_progress, BoxLayout.PAGE_AXIS));
+		pnl_progress.setLayout(new BoxLayout(pnl_progress, BoxLayout.PAGE_AXIS));
 		pnl_progress.setBorder(BorderFactory.createTitledBorder("Progress"));
 		pnl_progress.add(createStartPanel());
 		pnl_progress.add(Box.createVerticalStrut(10));
@@ -263,8 +248,7 @@ public class IDChanger extends JFrame implements ActionListener {
 		pnl_progress.add(status.lb_chunk);
 		pnl_progress.add(createChunkProgressBar());
 
-		pnl_progress.setPreferredSize(new Dimension(400, pnl_progress
-				.getHeight()));
+		pnl_progress.setPreferredSize(new Dimension(400, pnl_progress.getHeight()));
 
 		return pnl_progress;
 	}
@@ -294,8 +278,7 @@ public class IDChanger extends JFrame implements ActionListener {
 	private JPanel createChooseIDsPanel() {
 		JPanel pnl_chooseIDs = new JPanel();
 		pnl_chooseIDs.setBorder(BorderFactory.createTitledBorder("Change IDs"));
-		pnl_chooseIDs.setLayout(new BoxLayout(pnl_chooseIDs,
-				BoxLayout.PAGE_AXIS));
+		pnl_chooseIDs.setLayout(new BoxLayout(pnl_chooseIDs, BoxLayout.PAGE_AXIS));
 		pnl_chooseIDs.add(new JLabel("Translations: "));
 		pnl_chooseIDs.add(initIDPane());
 		pnl_chooseIDs.add(initSourceIDPanel());
@@ -315,7 +298,7 @@ public class IDChanger extends JFrame implements ActionListener {
 
 	private JButton createStartButton() {
 		JButton btn_start = new JButton("Start");
-		btn_start.addActionListener(this);
+		btn_start.addActionListener(engine);
 		btn_start.setActionCommand("start");
 		return btn_start;
 	}
@@ -323,14 +306,14 @@ public class IDChanger extends JFrame implements ActionListener {
 	// new version updated buttons
 	private JButton createRemoveIDButton() {
 		JButton btn_removeID = new JButton("Remove Translation");
-		btn_removeID.addActionListener(this);
+		btn_removeID.addActionListener(engine);
 		btn_removeID.setActionCommand("removeID");
 		return btn_removeID;
 	}
 
 	private JButton createAddIDButton() {
 		JButton btn_addID = new JButton("Add Translation");
-		btn_addID.addActionListener(this);
+		btn_addID.addActionListener(engine);
 		btn_addID.setActionCommand("addID");
 		return btn_addID;
 	}
@@ -341,20 +324,18 @@ public class IDChanger extends JFrame implements ActionListener {
 		pnl_openFiles.setBorder(BorderFactory.createTitledBorder("Setup"));
 		{
 			JPanel patchPanel = new JPanel();
-			patchPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-					null));
+			patchPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 			pnl_openFiles.add(patchPanel);
 			JLabel label = new JLabel("Load patch file:");
 			patchPanel.add(label);
 			JButton btn_openFile = new JButton("Load");
 			patchPanel.add(btn_openFile);
-			btn_openFile.addActionListener(this);
+			btn_openFile.addActionListener(engine);
 			btn_openFile.setActionCommand("openPatch");
 		}
 		{
 			JPanel savegamePanel = new JPanel();
-			savegamePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED,
-					null, null));
+			savegamePanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 			pnl_openFiles.add(savegamePanel);
 			JLabel label = new JLabel("Available savegames:");
 			savegamePanel.add(label);
@@ -366,23 +347,21 @@ public class IDChanger extends JFrame implements ActionListener {
 			cb_selectSaveGame.setRenderer(renderer);
 			JButton btn_openFile = new JButton("Add savegame");
 			savegamePanel.add(btn_openFile);
-			btn_openFile.addActionListener(this);
+			btn_openFile.addActionListener(engine);
 			btn_openFile.setActionCommand("openFolder");
 			{
 				JPanel pluginPanel = new JPanel();
-				pluginPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED,
-						null, null));
+				pluginPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 				pnl_openFiles.add(pluginPanel);
 				{
-					JButton btnConfigurePlugins = new JButton(
-							"Configure Plugins");
+					JButton btnConfigurePlugins = new JButton("Configure Plugins");
 					btnConfigurePlugins.setActionCommand("openPlugins");
-					btnConfigurePlugins.addActionListener(this);
+					btnConfigurePlugins.addActionListener(engine);
 					pluginPanel.add(btnConfigurePlugins);
 				}
 			}
 
-			cb_selectSaveGame.addActionListener(this);
+			cb_selectSaveGame.addActionListener(engine);
 		}
 
 		return pnl_openFiles;
@@ -398,6 +377,64 @@ public class IDChanger extends JFrame implements ActionListener {
 		li_ID = new JList(model);
 		return li_ID;
 	}
+	
+	public void addTranslation(TranslationRecord tr)
+			throws TranslationExistsException {
+		for (int i = 0; i < model.size(); i++) {
+			if (model.get(i).source.equals(tr.source)) {
+				throw new TranslationExistsException("Source ID " + tr.source
+						+ " is already being translated!");
+			}
+		}
+		int index = 0;
+		if (model.getSize() > 0) {
+			index = model.getSize();
+		}
+		model.add(index, tr);
+		return;
+	}
+	
+	public void removeTranslation(int index){
+		model.remove(index);
+	}
+	
+	public void loadTranslationsFromFile(File patch){
+		try {
+			FileInputStream fstream = new FileInputStream(patch);
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(in));
+			String strLine;
+			TranslationRecord tr;
+			while ((strLine = br.readLine()) != null) {
+				try {
+					tr = TranslationRecordFactory
+							.createTranslationRecord(strLine);
+					if (tr != null) {
+						addTranslation(tr);
+					} else {
+						logger.info("Patch contains an invalid line, no big deal: "
+								+ strLine);
+					}
+
+				} catch (NumberFormatException e2) {
+					// JOptionPane.showMessageDialog(this,
+					// "That's not how you format translations \""+strLine+System.getProperty("line.separator")+"example:"+System.getProperty("line.separator")+"1 stone -> 3 dirt",
+					// "Error", JOptionPane.ERROR_MESSAGE);
+					logger.info("Patch contains an invalid line, no big deal"
+							+ strLine);
+					continue;
+				}
+
+			}
+			br.close();
+			in.close();
+			fstream.close();
+
+		} catch (Exception filewriting) {
+			logger.log(Level.WARNING, "Unable to open patch file", filewriting);
+		}
+	}
 
 	private JComboBox createSelectSourceIDComboBox() {
 		if (idNames.size() > 0) {
@@ -412,8 +449,7 @@ public class IDChanger extends JFrame implements ActionListener {
 		cb_selectSourceID.setEditable(true);
 		cb_selectSourceID.setRenderer(renderer);
 
-		cb_selectSourceID.addActionListener(new NumberOnlyActionListener(
-				idNames, 0, 32000 - 1));
+		cb_selectSourceID.addActionListener(new NumberOnlyActionListener(idNames, 0, 32000 - 1));
 		return cb_selectSourceID;
 	}
 
@@ -430,8 +466,7 @@ public class IDChanger extends JFrame implements ActionListener {
 		cb_selectTargetID.setEditable(true);
 		cb_selectTargetID.setRenderer(renderer);
 
-		cb_selectTargetID.addActionListener(new NumberOnlyActionListener(
-				idNames, 0, 32000 - 1));
+		cb_selectTargetID.addActionListener(new NumberOnlyActionListener(idNames, 0, 32000 - 1));
 		return cb_selectTargetID;
 	}
 
@@ -452,8 +487,7 @@ public class IDChanger extends JFrame implements ActionListener {
 		case LINUX:
 			return new File(System.getProperty("user.home", "."), s);
 		case MAC: {
-			return new File(System.getProperty("user.home", "."),
-					"Library/Application Support/" + s);
+			return new File(System.getProperty("user.home", "."), "Library/Application Support/" + s);
 		}
 		default:
 			return new File(System.getProperty("user.home", "."), s);
@@ -485,285 +519,13 @@ public class IDChanger extends JFrame implements ActionListener {
 					result.add(line);
 
 			} catch (NumberFormatException e) {
-				JOptionPane
-						.showMessageDialog(
-								this,
-								"That's not how you format IDNames \"" + line
-										+ System.getProperty("line.separator")
-										+ "example:"
-										+ System.getProperty("line.separator")
-										+ "1 stone", "Error",
-								JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "That's not how you format IDNames \"" + line + System.getProperty("line.separator")
+						+ "example:" + System.getProperty("line.separator") + "1 stone", "Error", JOptionPane.ERROR_MESSAGE);
 				logger.config("User tried to input incorrectly formatted IDNames, no big deal");
 			}
 			line = br.readLine();
 		}
 		br.close();
 		return result;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// something changed - reset progress bars
-		status.pb_file.setValue(0);
-		status.pb_chunk.setValue(0);
-
-		// Open configure plugins screen
-		if ("openPlugins".equals(e.getActionCommand())) {
-			ConfigurePluginsUI configurePluginsUI = new ConfigurePluginsUI(
-					pluginLoader);
-		}
-
-		// Open Save Folder
-		if ("openFolder".equals(e.getActionCommand())) {
-			final JFileChooser fc = new JFileChooser();
-			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			fc.setSelectedFile(new File(getMCSavePath() + "/New World"));
-			int returnVal = fc.showOpenDialog(this);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File f = fc.getSelectedFile();
-				if (isValidSaveGame(f)) {
-					if (!saveGames.contains(f)) {
-						saveGames.add(f);
-
-						cb_selectSaveGame.addItem(f);
-						cb_selectSaveGame.setSelectedIndex(cb_selectSaveGame
-								.getItemCount() - 1);
-
-						// workaround for a bug that occurs when there was no
-						// item in the beginning
-						if (cb_selectSaveGame.getItemCount() > saveGames.size()) {
-							cb_selectSaveGame.removeItemAt(0);
-						}
-
-						// System.out.println(saveGames.size());
-						// System.out.println(cb_selectSaveGame.getItemCount());
-
-					} else {
-						cb_selectSaveGame
-								.setSelectedIndex(saveGames.indexOf(f));
-						JOptionPane
-								.showMessageDialog(
-										this,
-										"The selected savegame is already in the list!",
-										"Information",
-										JOptionPane.INFORMATION_MESSAGE);
-					}
-				} else {
-					JOptionPane.showMessageDialog(this, "Invalid savegame!",
-							"Error", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		}
-
-		// new version open a patch file
-		if ("openPatch".equals(e.getActionCommand())) {
-			final JFileChooser fc = new JFileChooser();
-			String path;
-			try {
-				path = IDChanger.class.getProtectionDomain().getCodeSource()
-						.getLocation().toURI().getPath();
-				fc.setSelectedFile(new File((new File(path)).getParent(),
-						"Patch.txt"));
-			} catch (URISyntaxException e1) {
-				logger.log(Level.WARNING, "Unable to load Patch file", e1);
-			}
-
-			int returnVal = fc.showOpenDialog(this);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				File f = fc.getSelectedFile();
-				if (f.exists()) {
-					try {
-						FileInputStream fstream = new FileInputStream(f);
-						DataInputStream in = new DataInputStream(fstream);
-						BufferedReader br = new BufferedReader(
-								new InputStreamReader(in));
-						String strLine;
-						TranslationRecord tr;
-						while ((strLine = br.readLine()) != null) {
-							try {
-								tr = TranslationRecordFactory
-										.createTranslationRecord(strLine);
-								if (tr != null) {
-									addTranslation(tr);
-								} else {
-									logger.info("Patch contains an invalid line, no big deal: "
-											+ strLine);
-								}
-
-							} catch (NumberFormatException e2) {
-								// JOptionPane.showMessageDialog(this,
-								// "That's not how you format translations \""+strLine+System.getProperty("line.separator")+"example:"+System.getProperty("line.separator")+"1 stone -> 3 dirt",
-								// "Error", JOptionPane.ERROR_MESSAGE);
-								logger.info("Patch contains an invalid line, no big deal"
-										+ strLine);
-								continue;
-							}
-
-						}
-						br.close();
-						in.close();
-						fstream.close();
-
-					} catch (Exception filewriting) {
-						logger.log(Level.WARNING, "Unable to open patch file",
-								filewriting);
-					}
-				}
-
-			}
-		}
-
-		// Add ID
-		// new version adds user stupidity resistance II
-		if ("addID".equals(e.getActionCommand())) {
-			try {
-				String currentSource = (String) cb_selectSourceID
-						.getSelectedItem();
-				String currentTarget = (String) cb_selectTargetID
-						.getSelectedItem();
-
-				TranslationRecord tr = TranslationRecordFactory
-						.createTranslationRecord(currentSource, currentTarget);
-				if (tr != null) {
-					addTranslation(tr);
-				} else {
-					JOptionPane.showMessageDialog(
-							this,
-							"That's not how you format translations"
-									+ System.getProperty("line.separator")
-									+ "example:"
-									+ System.getProperty("line.separator")
-									+ "1 stone"
-									+ System.getProperty("line.separator")
-									+ "3 dirt", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				}
-				// new version uses adds -> targetid to string
-
-				// old version- didn't include target
-				// model.add(index,
-				// (String)cb_selectSourceID.getSelectedItem()+);
-			} catch (NumberFormatException badinput) {
-				JOptionPane.showMessageDialog(
-						this,
-						"That's not how you format translations"
-								+ System.getProperty("line.separator")
-								+ "example:"
-								+ System.getProperty("line.separator")
-								+ "1 stone -> 3 dirt", "Error",
-						JOptionPane.ERROR_MESSAGE);
-				// ErrorHandler.logError(badinput);
-			}
-		}
-
-		// Remove ID
-		if ("removeID".equals(e.getActionCommand())) {
-			for (int i = li_ID.getSelectedIndices().length - 1; i >= 0; i--) {
-				model.remove(li_ID.getSelectedIndices()[i]);
-			}
-			// model.remove(model.indexOf((String)li_ID.getSelectedValue()));
-		}
-		// Start
-		if ("start".equals(e.getActionCommand())) {
-			// Savegame
-			int saveIndex = cb_selectSaveGame.getSelectedIndex();
-			if ((saveGames == null) || (saveGames.size() == 0)) {
-				JOptionPane.showMessageDialog(this,
-						"No save game has been chosen!", "Warning",
-						JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-
-			if (saveIndex < 0) {
-				return;
-			}
-
-			if (model.size() == 0) {
-				JOptionPane.showMessageDialog(this, "No IDs have been chosen!",
-						"Warning", JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			// new version use a hashmap to record what blocks to transmute
-			// to what.
-			final HashMap<BlockUID, BlockUID> translations = new HashMap<BlockUID, BlockUID>();
-
-			for (int i = 0; i < model.size(); i++) {
-				TranslationRecord tr = (TranslationRecord) model.get(i);
-				logger.config(tr.toString());
-				if (tr.source != null && tr.target != null) {
-					translations.put(tr.source, tr.target);
-				}
-
-			}
-
-			final IDChanger UI = this;
-			// change block ids
-
-			final World world;
-			try {
-				world = new World(saveGames.get(saveIndex));
-
-				SwingWorker worker = new SwingWorker() {
-					@Override
-					protected Object doInBackground() throws Exception {
-						world.convert(UI, translations, pluginLoader);
-						return null;
-					}
-				};
-
-				// worker.addPropertyChangeListener(this);
-				worker.execute();
-			} catch (IOException e1) {
-				logger.log(Level.WARNING,
-						"Unable to open world, are you sure you have selected a save?");
-			}
-		}
-		return;
-	}
-
-	private void addTranslation(TranslationRecord tr) {
-		for (int i = 0; i < model.size(); i++) {
-			if (((TranslationRecord) model.get(i)).source.equals(tr.source)) {
-				JOptionPane.showMessageDialog(this, "Source ID " + tr.source
-						+ " is already being translated!", "Information",
-						JOptionPane.INFORMATION_MESSAGE);
-				return;
-			}
-		}
-		int index = 0;
-		if (model.getSize() > 0) {
-			index = model.getSize();
-		}
-		model.add(index, tr);
-		return;
-	}
-
-	public static void main(String[] args) {
-		try {
-			initRootLogger();
-		} catch (SecurityException | IOException e) {
-			logger.log(Level.WARNING, "Unable to create log File", e);
-			return;
-		}
-		EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
-		queue.push(new EventQueueProxy());
-
-		try {
-			// Use system specific look and feel
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			logger.log(Level.WARNING, "Unable to set look and feel", e);
-		}
-		try {
-			IDChanger frame = new IDChanger("mIDas *GOLD* V0.2.5");
-
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Runtime Exception", e);
-		}
-
-		logger.config("System Look and Feel:"
-				+ UIManager.getSystemLookAndFeelClassName().toString());
-
 	}
 }

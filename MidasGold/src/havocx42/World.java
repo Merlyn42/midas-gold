@@ -36,6 +36,14 @@ public class World {
 		regionFiles = getRegionFiles();
 		playerFiles = getPlayerFiles();
 	}
+	
+	public int getNumberOfPlayerFiles(){
+		return playerFiles.size();
+	}
+	
+	public int getNumberOfRegionFiles(){
+		return regionFiles.size();
+	}
 
 	public void convert(IDChanger UI, HashMap<BlockUID, BlockUID> translations,PluginLoader pluginLoader) {
 		Status status = UI.status;
@@ -123,7 +131,7 @@ public class World {
 				+ " blocks in entity inventories changed.", "Information", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	private ArrayList<RegionFileExtended> getRegionFiles() throws IOException {
+	public ArrayList<RegionFileExtended> getRegionFiles() throws IOException {
 		// Switch to the "region" folder
 		File regionDir = new File(baseFolder, "region");
 		if (!regionDir.exists()) {
@@ -166,7 +174,7 @@ public class World {
 		return result;
 	}
 
-	private ArrayList<PlayerFile> getPlayerFiles() throws IOException {
+	public ArrayList<PlayerFile> getPlayerFiles() throws IOException {
 		// Switch to the "region" folder
 		File playersDir = new File(baseFolder, "players");
 		File levelDat = new File(baseFolder, "level.dat");
